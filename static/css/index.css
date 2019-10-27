@@ -1,0 +1,9 @@
+h3.index-content {
+    font-size: 222%;
+    /* 生成绝对定位的元素 */
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    /* 往上(X轴)，左(Y轴) 移动自身长宽的50% ，以使其居于中心位置 */
+    transform: translate(-50%, -50%);
+}

@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+{% load staticfiles %}
+{% block title %}
+    首页
+{% endblock title %}
+{% block header_extends %}
+    <link rel="stylesheet" href="{% static '/css/index.css'%}">
+{% endblock header_extends %}
+
+{% block nav_index_active %}
+    active
+{% endblock %}
+
+{% block content %}
+    <link>
+    <h3 class="index-content">欢迎访问我的网站</h3>
+{% endblock content %}

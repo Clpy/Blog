@@ -1,0 +1,39 @@
+ul.article_cate {
+    list-style-type: none;
+}
+
+/* 不是最后一个都设置如下 */
+div.article:not(:last-child) {
+     margin-bottom: 2em;
+    /* 设置元素的下内边距属性 */
+    padding-bottom: 1em;
+    /* 设置下边框的样式 */
+    border-bottom: 1px solid #eee;
+}
+
+div.article h3{
+    margin-top: 0.5em;
+
+}
+
+div.article p.article-info {
+    margin-bottom: 0;
+}
+
+/* article detail.html*/
+ul.article-info-desc {
+    /* 设置列表标记的类型 */
+    list-style-type: none;
+    /* 设置元素的下边距属性 */
+    margin-bottom: 1em;
+}
+ul.article-info-desc li{
+    /* display 规定元素应该生成框的类型 */
+    display: inline-block;
+    /* 边距属性 */
+    margin-right: 2em;
+}
+div.article-content {
+    /*首行缩进*/
+    text-indent: 2em ;
+}
