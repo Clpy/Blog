@@ -5,18 +5,5 @@
 {% endblock title %}
 
 {% block article_list_title %}
-    分类: {{ category.category_name }}
-    <a href="{% url 'article_list' %}">查看全部文章</a>
+    分类: {{ category.category_name }}<a href="{% url 'article_list' %}">查看全部文章</a>
 {% endblock %}
-{# 页面内容 #}
-{#{% block content %}#}
-{#    <h3>{{ category.category_name }}</h3>#}
-{#    {% for article in articles %}#}
-{#        <a href="{% url 'article_detail' article.pk%}">#}
-{#            <h3>{{ article.title }}</h3>#}
-{#        </a>#}
-{#        <p>摘要: {{ article.content|truncatechars:30 }}</p>#}
-{#    {% empty %}#}
-{#        <p>---暂无博客，敬请期待</p>#}
-{#    {% endfor %}#}
-{#{% endblock content %}#}

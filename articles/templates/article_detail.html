@@ -17,7 +17,8 @@
                 <h3>{{ article.title }}</h3>
                 <ul class="article-info-desc">
                     <li>作者:{{ article.author }}</li>
-                    <li>分类:<a href="{% url 'category_article' article.category.pk %}">{{ article.category }}</a></li>
+                    <li>分类:<a href="{% url 'article_category' article.category.pk %}"
+                    >{{ article.category }}</a></li>
                     <li>发表日期:{{ article.created_time|date:"Y-m-d" }}</li>
                 </ul>
                 <div class="article-content">{{ article.content }}</div>

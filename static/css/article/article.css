@@ -37,3 +37,8 @@ div.article-content {
     /*首行缩进*/
     text-indent: 2em ;
 }
+
+/*设置页码居中*/
+div.paginator {
+    text-align: center;
+}
