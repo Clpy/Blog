@@ -99,6 +99,20 @@
                         </ul>
                     </div>
                 </div>
+                <div class="panel panel-default">
+                    <div class="panel-heading">日期归档</div>
+                    <div class="panel-body">
+                        <ul>
+                            {% for article_date in article_dates %}
+                                <li>
+                                    <a href="{% url 'date_archive' article_date.year article_date.month %}">
+                                        {{ article_date|date:"Y年m月" }}
+                                    </a>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

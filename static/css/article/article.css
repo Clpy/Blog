@@ -22,8 +22,6 @@ div.article p.article-info {
 
 /* article detail.html*/
 ul.article-info-desc {
-    /* 设置列表标记的类型 */
-    list-style-type: none;
     /* 设置元素的下边距属性 */
     margin-bottom: 1em;
 }
@@ -41,4 +39,9 @@ div.article-content {
 /*设置页码居中*/
 div.paginator {
     text-align: center;
+}
+
+/*上下篇*/
+div.article-context {
+    margin-top: 1em;
 }

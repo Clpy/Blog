@@ -7,6 +7,10 @@ class Category(models.Model):
     def __str__(self):
         return self.category_name
 
+    class Meta:
+        verbose_name = '分类'
+        verbose_name_plural = verbose_name
+
 class Article(models.Model):
     title = models.CharField('标题', max_length=50)
     content = models.TextField('内容')
@@ -22,6 +26,8 @@ class Article(models.Model):
 
     class Meta:
         ordering = ['-created_time']
+        verbose_name = '文章'
+        verbose_name_plural = verbose_name
 
 class Tags:
     pass
