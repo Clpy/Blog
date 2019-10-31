@@ -2,6 +2,7 @@ from django.shortcuts import render, get_object_or_404
 from .models import Article, Category
 from django.core.paginator import Paginator
 from django.db.models import Count
+import markdown
 
 # Create your views here.
 def article_list(request):
@@ -74,6 +75,13 @@ def article_detail(request, article_pk):
         created_time__lt=article.created_time).first()  # 上一篇文章
     next_article = Article.objects.filter(
         created_time__gt=article.created_time).last() # 下一篇文章
+    article.content = markdown.markdown(
+        article.content, extensions=[
+            'markdown.extensions.extra',
+            'markdown.extensions.codehilite',
+            'markdown.extensions.toc',
+        ]
+    )
     context = {
         'article': article,
         'previous_article': previous_article,

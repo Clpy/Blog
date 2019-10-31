@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import User
+from mdeditor.fields import MDTextField
 # Create your models here.
 class Category(models.Model):
     category_name = models.CharField('类名', max_length=15)
@@ -13,7 +14,8 @@ class Category(models.Model):
 
 class Article(models.Model):
     title = models.CharField('标题', max_length=50)
-    content = models.TextField('内容')
+    # content = models.TextField('内容')
+    content = MDTextField()
     category = models.ForeignKey(Category,verbose_name='分类',
                                  on_delete=models.CASCADE,
                                  related_name='article_relate')
