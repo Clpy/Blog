@@ -92,7 +92,9 @@
                     <div class="panel-body">
                         <ul class="article_cate">
                             {% for article_cg in categorys %}
-                                <li><a href="{% url 'article_category' article_cg.pk %}">{{ article_cg.category_name }}</a></li>
+                                <li><a href="
+{% url 'article_category' article_cg.pk %}">{{ article_cg.category_name }}
+                                    ({{ article_cg.article_count }})</a></li>
                             {% empty %}
                                 <li>暂无分类</li>
                             {% endfor %}
@@ -103,10 +105,10 @@
                     <div class="panel-heading">日期归档</div>
                     <div class="panel-body">
                         <ul>
-                            {% for article_date in article_dates %}
+                            {% for article_date, article_count in article_dates.items %}
                                 <li>
                                     <a href="{% url 'date_archive' article_date.year article_date.month %}">
-                                        {{ article_date|date:"Y年m月" }}
+                                        {{ article_date|date:"Y年m月" }}({{ article_count }})
                                     </a>
                                 </li>
                             {% endfor %}

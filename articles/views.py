@@ -1,6 +1,7 @@
 from django.shortcuts import render, get_object_or_404
 from .models import Article, Category
 from django.core.paginator import Paginator
+from django.db.models import Count
 
 # Create your views here.
 def article_list(request):
@@ -28,15 +29,36 @@ def article_list(request):
     if page_range[-1] != paginator.num_pages:
         page_range.append(paginator.num_pages)
 
-    categorys = Category.objects.all()  #获取分类的类中所有数据
+    # 获取文章分类的对应文章数量
+    '''
+    categorys = Category.objects.all()  #获取所有分类
+    article_categorys_list = []
+    for category in categorys:
+        category.article_count = Article.objects.filter(
+            category=category).count()
+        article_categorys_list.append(category)
+    '''
+    # annotate 拓展查询字段
+    categorys = Category.objects.annotate(article_count=Count('article_relate'))
+
+    # 获取日期归档的对应文章数量
     article_dates = Article.objects.dates('created_time', 'month', order="DESC")
+    article_date_dict = {}
+    for article_date in article_dates:
+        article_count = Article.objects.filter(
+            created_time__year=article_date.year,
+            created_time__month=article_date.month
+        ).count()
+        article_date_dict[article_date] = article_count
+
+
     articles_list = current_page_articles.object_list
     context = {
         'current_page_articles': current_page_articles,
         'categorys': categorys,
         'articles_list': articles_list,
         'page_range': page_range,
-        'article_dates': article_dates,
+        'article_dates': article_date_dict,
     }
     return render(request,'article_list.html', context)
 
