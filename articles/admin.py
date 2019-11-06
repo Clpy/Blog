@@ -1,5 +1,5 @@
 from django.contrib import admin
-from articles.models import Article, Category, Tags
+from articles.models import Article, Category, Tags, ReadNum
 
 # Register your models here.
 @admin.register(Category)
@@ -13,6 +13,14 @@ class ArticleAdmin(admin.ModelAdmin):
         'title',
         'category',
         'author',
+        'get_read_num',
         'created_time',
         'update_time'
+    )
+
+@admin.register(ReadNum)
+class ReadNumAdmin(admin.ModelAdmin):
+    list_display = (
+        'article',
+        'read_num',
     )

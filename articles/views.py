@@ -1,13 +1,17 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Article, Category
+from .models import Article, Category, ReadNum
 from django.core.paginator import Paginator
 from django.db.models import Count
 import markdown
 
 # Create your views here.
 def article_list(request):
+    '''
+    :param request:
+    :return:
+    '''
     article_all_list = Article.objects.all()
-    paginator = Paginator(article_all_list,7)  # 每10篇 进行分页
+    paginator = Paginator(article_all_list,2)  # 每10篇 进行分页
     page_num = request.GET.get('page', 1)  # 获取url的页面参数(请求的页码)
     current_page_articles = paginator.get_page(page_num)  # 当前页的文章
     current_page_num = current_page_articles.number # 获取当前页码
@@ -70,6 +74,19 @@ def article_detail(request, article_pk):
     :param article_pk: 文章主键
     :return:
     """
+    # 保存每次具体打开某个文章的次数
+    article = get_object_or_404(Article, pk=article_pk)
+    if not request.COOKIES.get('article_{}_read'.format(article_pk)):
+        if ReadNum.objects.filter(article=article).count():
+            # 存在记录
+            readnum = ReadNum.objects.get(article=article)
+        else:
+            # 不存在对应的记录
+            readnum = ReadNum(article=article)
+        # 计数加1
+        readnum.read_num += 1
+        readnum.save()
+
     article = get_object_or_404(Article, pk=article_pk)
     previous_article = Article.objects.filter(
         created_time__lt=article.created_time).first()  # 上一篇文章
@@ -87,7 +104,12 @@ def article_detail(request, article_pk):
         'previous_article': previous_article,
         'next_article': next_article
     }
-    return render(request, 'article_detail.html', context)
+    response = render(request, 'article_detail.html', context)  # 响应
+    response.set_cookie('article_{}_read'.format(article_pk),
+                        'true',
+                        max_age=60*60*12
+    )
+    return response
 
 
 def article_category(request, category_pk):
@@ -105,27 +127,20 @@ def article_category(request, category_pk):
 # 按月归档
 def date_archive(request, year, month):
     """
-
     :param request:
     :param year: 年
     :param month: 月
     :return:
     """
     article_all_list = Article.objects.filter(created_time__year=year,
-                                            created_time__month=month)
-    paginator = Paginator(article_all_list, 7)  # 每7篇 进行分页
+                                              created_time__month=month)  #
+    # 查询本年月所有文章列表
+    paginator = Paginator(article_all_list, 2)  # 每7篇 进行分页
     page_num = request.GET.get('page', 1)  # 获取url的页面参数(请求的页码)
     current_page_articles = paginator.get_page(page_num)  # 当前页的文章
     current_page_num = current_page_articles.number  # 获取当前页码
-
-    # 获取当前页码前后各两页的范围
-    # page_range = list(range(max(current_page_num - 2, 1), current_page_num)) \
-    # + list(range(current_page_num, min(current_page_num + 2,
-    # paginator.num_pages) + 1))
     page_range = [x for x in range(current_page_num - 2, current_page_num + 3)
-                  if
-                  (
-                              x > 0 and x < paginator.num_pages + 1)]  # paginator.num_pages 获得总页数
+                  if(x > 0 and x < paginator.num_pages + 1)]  # paginator.num_pages 获得总页数
 
     # 加入省略号标记
     if page_range[0] - 1 >= 2:
