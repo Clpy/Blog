@@ -20,7 +20,7 @@
                     <li>分类:<a href="{% url 'article_category' article.category.pk %}"
                     >{{ article.category }}</a></li>
                     <li>发表日期:{{ article.created_time|date:"Y-m-d" }}</li>
-                    <li>阅读次数({{ article.read_num }})</li>
+                    <li>阅读次数({{ article.get_read_num }})</li>
                 </ul>
                 <div class="article-content">{{ article.content|safe }}</div>
                 <div class="article-context">

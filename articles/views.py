@@ -1,8 +1,9 @@
 from django.shortcuts import render, get_object_or_404
-from .models import Article, Category, ReadNum
+from .models import Article, Category
 from django.core.paginator import Paginator
 from django.db.models import Count
 import markdown
+from read_statistics.utils import read_statistics_once_read
 
 # Create your views here.
 def article_list(request):
@@ -67,31 +68,19 @@ def article_list(request):
     }
     return render(request,'article_list.html', context)
 
-
 def article_detail(request, article_pk):
     """
     :param request:
-    :param article_pk: 文章主键
+    :param article_pk: 文章主键,从http://127.0.0.1:8000/articles/36/传递
     :return:
     """
-    # 保存每次具体打开某个文章的次数
-    article = get_object_or_404(Article, pk=article_pk)
-    if not request.COOKIES.get('article_{}_read'.format(article_pk)):
-        if ReadNum.objects.filter(article=article).count():
-            # 存在记录
-            readnum = ReadNum.objects.get(article=article)
-        else:
-            # 不存在对应的记录
-            readnum = ReadNum(article=article)
-        # 计数加1
-        readnum.read_num += 1
-        readnum.save()
+    article = get_object_or_404(Article, pk=article_pk)  # Article.objects.get(pk=article_pk)
+    read_cookie_key = read_statistics_once_read(request, article)  # 取出article实例之后传递
 
-    article = get_object_or_404(Article, pk=article_pk)
-    previous_article = Article.objects.filter(
-        created_time__lt=article.created_time).first()  # 上一篇文章
-    next_article = Article.objects.filter(
-        created_time__gt=article.created_time).last() # 下一篇文章
+    previous_article = Article.objects.filter(created_time__lt=article.created_time).first()  # 上一篇文章
+    next_article = Article.objects.filter(created_time__gt=article.created_time).last() # 下一篇文章
+
+    # 渲染markdown文档
     article.content = markdown.markdown(
         article.content, extensions=[
             'markdown.extensions.extra',
@@ -104,13 +93,10 @@ def article_detail(request, article_pk):
         'previous_article': previous_article,
         'next_article': next_article
     }
-    response = render(request, 'article_detail.html', context)  # 响应
-    response.set_cookie('article_{}_read'.format(article_pk),
-                        'true',
-                        max_age=60*60*12
-    )
-    return response
 
+    response = render(request, 'article_detail.html', context)  # 响应
+    response.set_cookie(read_cookie_key, 'true', max_age=60*60*12)  # 阅读cookie标记
+    return response
 
 def article_category(request, category_pk):
     # 查询pk=category_pk参数的分类
