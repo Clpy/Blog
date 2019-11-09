@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import ReadNum
+from .models import ReadNum, ReadDetail
 
 
 # Register your models here.
@@ -10,3 +10,11 @@ class ReadNumAdmin(admin.ModelAdmin):
         'content_type',
         'read_num',
     )
+
+@admin.register(ReadDetail)
+class ReadDetailAdmin(admin.ModelAdmin):
+    list_display = (
+        'content_object',
+        'date',
+        'read_num',
+)
