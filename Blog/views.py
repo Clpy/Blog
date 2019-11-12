@@ -1,6 +1,7 @@
 # coding=utf-8
 import datetime
 from django.shortcuts import render
+from django.core.cache import cache
 from django.contrib.contenttypes.models import ContentType
 from read_statistics.utils import get_seven_days_read_data,\
     get_today_hot_data, get_yesterday_hot_data
@@ -19,12 +20,19 @@ def get_7_days_hot_articles():
 
     return articles[:7]
 
+
 def index(request):
     article_content_type = ContentType.objects.get_for_model(Article)  # 获取模型类
     dates, read_nums = get_seven_days_read_data(article_content_type)
     today_hot_data = get_today_hot_data(article_content_type)
     yesterday_hot_data = get_yesterday_hot_data(article_content_type)
-    hot_articles_for_7_days = get_7_days_hot_articles()
+
+    # 获取7天热门文章的缓存数据
+    hot_articles_for_7_days = cache.get('hot_articles_for_7_days')
+    if hot_articles_for_7_days is None:
+        hot_articles_for_7_days = get_7_days_hot_articles()
+        cache.set('hot_articles_for_7_days', hot_articles_for_7_days, 3600)
+
     context = {
         'read_nums': read_nums,
         'dates': dates,
