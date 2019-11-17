@@ -45,3 +45,13 @@ div.paginator {
 div.article-context {
     margin-top: 1em;
 }
+
+div.comment-area {
+    margin-top: 2em;
+}
+
+h4.comment-area-title {
+    border-bottom: 1px solid #cccccc;
+    padding-bottom: 0.4em;
+}
+

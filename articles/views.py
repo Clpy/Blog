@@ -2,8 +2,10 @@ from django.shortcuts import render, get_object_or_404
 from .models import Article, Category
 from django.core.paginator import Paginator
 from django.db.models import Count
+from django.contrib.contenttypes.models import ContentType
 import markdown
 from read_statistics.utils import read_statistics_once_read
+from comments.models import Comment
 
 # Create your views here.
 def article_list(request):
@@ -12,7 +14,7 @@ def article_list(request):
     :return:
     '''
     article_all_list = Article.objects.all()
-    paginator = Paginator(article_all_list,2)  # 每10篇 进行分页
+    paginator = Paginator(article_all_list,6)  # 每10篇 进行分页
     page_num = request.GET.get('page', 1)  # 获取url的页面参数(请求的页码)
     current_page_articles = paginator.get_page(page_num)  # 当前页的文章
     current_page_num = current_page_articles.number # 获取当前页码
@@ -80,6 +82,9 @@ def article_detail(request, article_pk):
     previous_article = Article.objects.filter(created_time__lt=article.created_time).first()  # 上一篇文章
     next_article = Article.objects.filter(created_time__gt=article.created_time).last() # 下一篇文章
 
+    article_content_type = ContentType.objects.get_for_model(article)
+    comments = Comment.objects.filter(content_type=article_content_type, object_id=article.pk)
+
     # 渲染markdown文档
     article.content = markdown.markdown(
         article.content, extensions=[
@@ -91,7 +96,8 @@ def article_detail(request, article_pk):
     context = {
         'article': article,
         'previous_article': previous_article,
-        'next_article': next_article
+        'next_article': next_article,
+        'comments': comments,
     }
 
     response = render(request, 'article_detail.html', context)  # 响应
@@ -106,7 +112,7 @@ def article_category(request, category_pk):
     context = {
         'articles_list': con_category,
         'category': category,
-        'categorys_all': categorys_all
+        'categorys_all': categorys_all,
     }
     return render(request, 'category_article.html', context)
 

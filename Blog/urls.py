@@ -22,7 +22,9 @@ from django.conf import settings
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('articles/', include('articles.urls')),
+    path('comments/', include('comments.urls')),
     path('', views.index, name='index'),
+    path('login/', views.landing_page, name='login'),
     path('mdeditor/', include('mdeditor.urls')),
 ]
 

@@ -1,13 +1,15 @@
 # coding=utf-8
 import datetime
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.core.cache import cache
 from django.contrib.contenttypes.models import ContentType
 from read_statistics.utils import get_seven_days_read_data,\
     get_today_hot_data, get_yesterday_hot_data
+from django.contrib.auth import login, authenticate
 from articles.models import Article
 from django.db.models import Sum
 from django.utils import timezone
+from django.urls import reverse
 
 def get_7_days_hot_articles():
     today = timezone.now().date()
@@ -41,3 +43,17 @@ def index(request):
         'hot_articles_for_7_days': hot_articles_for_7_days,
     }
     return render(request, 'index.html', context)
+
+
+def landing_page(request):
+    username = request.POST.get('username', '')
+    password = request.POST.get('password', '')
+    user = authenticate(request, username=username, password=password)
+    referer = request.META.get('HTTP_REFERER', reverse('index'))  # 根据请求头获取信息
+    if user is not None:
+        login(request, user)
+        return redirect(referer)
+    else:
+        return render(request, 'error.html', {
+            'message':'用户名或密码不正确'
+        })

@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'articles',  # 文章
     'mdeditor',  # markdown 编辑器
     'read_statistics',
+    'comments',  # 评论
 ]
 
 MIDDLEWARE = [
