@@ -24,7 +24,8 @@ urlpatterns = [
     path('articles/', include('articles.urls')),
     path('comments/', include('comments.urls')),
     path('', views.index, name='index'),
-    path('login/', views.landing_page, name='login'),
+    path('login/', views.login, name='login'),
+    path('register/', views.register, name='register'),
     path('mdeditor/', include('mdeditor.urls')),
 ]
 

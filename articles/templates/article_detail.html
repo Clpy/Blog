@@ -61,19 +61,10 @@
 
                         </form>
                     {% else %}
-                        请先登录后发表评论
-                        <form action="{% url 'login' %}" method="post">
-                            <label>
-                                {% csrf_token %}
-                                <span>用户名:</span>
-                                <input type="text" name="username">
-                            </label>
-                            <label>
-                                <span>密码:</span>
-                                <input type="password" name="password">
-                            </label>
-                            <input type="submit" value="登录">
-                        </form>
+                        请您先登录或注册后发表评论
+                        <a class="btn btn-primary" href="{% url 'login' %}?from={{ request.path }}">登录</a>
+                        <span> or </span>
+                        <a class="btn btn-danger" href="{% url 'register' %}?from={{ request.path }}">注册</a>
                     {% endif %}
                 </div>
                 <div class="comment-area">

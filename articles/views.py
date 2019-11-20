@@ -70,6 +70,7 @@ def article_list(request):
     }
     return render(request,'article_list.html', context)
 
+
 def article_detail(request, article_pk):
     """
     :param request:
@@ -103,6 +104,7 @@ def article_detail(request, article_pk):
     response = render(request, 'article_detail.html', context)  # 响应
     response.set_cookie(read_cookie_key, 'true', max_age=60*60*12)  # 阅读cookie标记
     return response
+
 
 def article_category(request, category_pk):
     # 查询pk=category_pk参数的分类
