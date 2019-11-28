@@ -13,7 +13,7 @@ class ReadNum(models.Model):
         ContentType,
         verbose_name='内容类型',
         on_delete=models.DO_NOTHING
-    )  # 连接于ContentType
+    )  # 连接于ContentType 告知django与之相关的对象类型
     object_id = models.PositiveIntegerField('对象id') # 记录所对应的模型的实例的id号
     content_object = GenericForeignKey()  # 默认传入content_type, object_id
 

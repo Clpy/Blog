@@ -15,6 +15,7 @@ from django.utils import timezone
 from .forms import LoginForm, RegForm
 from django.urls import reverse
 
+
 def get_7_days_hot_articles():
     today = timezone.now().date()
     date = today - datetime.timedelta(days=7)
@@ -32,9 +33,8 @@ def index(request):
     dates, read_nums = get_seven_days_read_data(article_content_type)
     today_hot_data = get_today_hot_data(article_content_type)
     yesterday_hot_data = get_yesterday_hot_data(article_content_type)
-
-    # 获取7天热门文章的缓存数据
     hot_articles_for_7_days = cache.get('hot_articles_for_7_days')
+
     if hot_articles_for_7_days is None:
         hot_articles_for_7_days = get_7_days_hot_articles()
         cache.set('hot_articles_for_7_days', hot_articles_for_7_days, 3600)

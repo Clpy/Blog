@@ -8,16 +8,15 @@
     <title>{% block title %}{% endblock title %}</title>
     <link rel="stylesheet" href="{% static 'css/base.css' %}">
     <link rel="stylesheet" href="{% static 'bootstrap-3.3.7/css/bootstrap.min.css' %}">
-    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
-    <script type="text/javascript" src="{% static 'bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
     {% block header_extends %}{% endblock header_extends %}
 </head>
+
 <body>
     <div class="navbar navbar-default navbar-fixed-top" role="navigation">
         <div class="container-fluid">
             <div class="navbar-header">
                 <a class="navbar-brand" href="{% url 'index' %}">个人博客网站</a>
-                <button type="button" class="navbar-toggle collapsed"
+                <button class="navbar-toggle collapsed"
                         data-toggle="collapse"
                         data-target="#navbar-collapse">
                     <span class="icon-bar"></span>
@@ -39,5 +38,8 @@
         </div>
     </div>
     {% block content %}{% endblock content %}
+    <script type="text/javascript" src="{% static 'js/jquery-3.4.1.min.js' %}"></script>
+    <script type="text/javascript" src="{% static 'bootstrap-3.3.7/js/bootstrap.min.js' %}"></script>
+    {% block script_extends %}{% endblock script_extends %}
 </body>
 </html>

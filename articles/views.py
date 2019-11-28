@@ -6,6 +6,7 @@ from django.contrib.contenttypes.models import ContentType
 import markdown
 from read_statistics.utils import read_statistics_once_read
 from comments.models import Comment
+from comments.forms import CommentForm
 
 # Create your views here.
 def article_list(request):
@@ -83,7 +84,7 @@ def article_detail(request, article_pk):
     previous_article = Article.objects.filter(created_time__lt=article.created_time).first()  # 上一篇文章
     next_article = Article.objects.filter(created_time__gt=article.created_time).last() # 下一篇文章
 
-    article_content_type = ContentType.objects.get_for_model(article)
+    article_content_type = ContentType.objects.get_for_model(article)  # 通过modle或model的实例来寻找ContentType类型
     comments = Comment.objects.filter(content_type=article_content_type, object_id=article.pk)
 
     # 渲染markdown文档
@@ -94,11 +95,17 @@ def article_detail(request, article_pk):
             'markdown.extensions.toc',
         ]
     )
+    comment_form = CommentForm(initial={
+        'content_type': article_content_type.model,
+        'object_id': article_pk,
+    })  # 实例化一个form
+
     context = {
         'article': article,
         'previous_article': previous_article,
         'next_article': next_article,
         'comments': comments,
+        'comment_form': comment_form,
     }
 
     response = render(request, 'article_detail.html', context)  # 响应
