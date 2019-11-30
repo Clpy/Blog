@@ -85,7 +85,8 @@ def article_detail(request, article_pk):
     next_article = Article.objects.filter(created_time__gt=article.created_time).last() # 下一篇文章
 
     article_content_type = ContentType.objects.get_for_model(article)  # 通过modle或model的实例来寻找ContentType类型
-    comments = Comment.objects.filter(content_type=article_content_type, object_id=article.pk)
+    comments = Comment.objects.filter(content_type=article_content_type,
+                                      object_id=article.pk, parent=None)
 
     # 渲染markdown文档
     article.content = markdown.markdown(
@@ -98,6 +99,7 @@ def article_detail(request, article_pk):
     comment_form = CommentForm(initial={
         'content_type': article_content_type.model,
         'object_id': article_pk,
+        'reply_comment_id': '0',  # 顶级评论设置为0
     })  # 实例化一个form
 
     context = {

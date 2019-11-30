@@ -59,3 +59,11 @@ div.django-ckeditor-widget {
     width: 100%;
 }
 
+div.comment {
+    border-bottom: 1px dashed #ccc;
+    margin-bottom: 0.5em;
+    padding-bottom: 0;
+}
+div.reply {
+    margin-left: 2em;
+}

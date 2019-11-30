@@ -13,6 +13,13 @@ def submit_comment(request):
         comment.commenter = comment_form.cleaned_data['user']
         comment.comment_content = comment_form.cleaned_data['comment_content']
         comment.content_object = comment_form.cleaned_data['content_object']
+
+        parent = comment_form.cleaned_data['parent']  # 判断是否是回复（or评论）
+
+        if not parent is None:
+            comment.root = parent.root if not parent.root is None else parent
+            comment.parent = parent
+            comment.reply_to = parent.commenter
         comment.save()
 
         # 返回数据
@@ -20,6 +27,14 @@ def submit_comment(request):
         data['commenter'] = comment.commenter.username
         data['comment_time'] = comment.comment_time.strftime('%Y-%m-%d %H:%M:%S')
         data['comment_content'] = comment.comment_content
+
+        if not parent is None:
+            data['reply_to'] = comment.reply_to.username
+        else:
+            data['reply_to'] = ''
+
+        data['pk'] = comment.pk
+        data['root_pk'] = comment.root.pk if not comment.root is None else ''
     else:
         data['status'] = 'ERROR'
         data['message'] = list(comment_form.errors.values())[0][0]
