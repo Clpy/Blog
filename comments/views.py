@@ -25,7 +25,7 @@ def submit_comment(request):
         # 返回数据
         data['status'] = 'SUCCESS'
         data['commenter'] = comment.commenter.username
-        data['comment_time'] = comment.comment_time.strftime('%Y-%m-%d %H:%M:%S')
+        data['comment_time'] = comment.comment_time.timestamp()
         data['comment_content'] = comment.comment_content
 
         if not parent is None:

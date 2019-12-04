@@ -12,7 +12,7 @@ class ReadNum(models.Model):
     content_type = models.ForeignKey(
         ContentType,
         verbose_name='内容类型',
-        on_delete=models.DO_NOTHING
+        on_delete=models.CASCADE
     )  # 连接于ContentType 告知django与之相关的对象类型
     object_id = models.PositiveIntegerField('对象id') # 记录所对应的模型的实例的id号
     content_object = GenericForeignKey()  # 默认传入content_type, object_id
@@ -39,7 +39,7 @@ class ReadDetail(models.Model):
     date = models.DateField(default=timezone.now)  # 设置日期，默认当天
     read_num = models.IntegerField(default=0)
 
-    content_type = models.ForeignKey(ContentType, on_delete=models.DO_NOTHING)
+    content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     content_object = GenericForeignKey()
 
