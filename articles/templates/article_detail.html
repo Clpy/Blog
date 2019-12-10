@@ -8,7 +8,7 @@
 
 {% load staticfiles %}
 {% load comment_tags %}
-
+{% load likes_tags %}
 {% block header_extends %}
     <link rel="stylesheet" href="{% static 'css/article/article.css' %}">
 {% endblock header_extends %}
@@ -27,6 +27,11 @@
                     <li>评论({% get_comment_count article %})</li>
                 </ul>
                 <div class="article-content">{{ article.content|safe }}</div>
+                <div class="like" onclick="likeChange(this, '{% get_content_type article %}', {{ article.pk }})">
+                    <span class="glyphicon glyphicon-thumbs-up {% get_like_status article %}"></span>
+                    <span class="liked-num">{% get_likes_count article %}</span>
+                    <span>喜欢</span>
+                </div>
                 <div class="article-context">
                     <div id="previous_article">上一篇:
                         {% if previous_article %}
@@ -46,7 +51,7 @@
             </div>
         </div>
 
-        <div class="row">
+        <div class="row">'
             <div class="col-xs-10 col-md-offset-1">
                 <div class="comment-area">
                     <h4 class="comment-area-title">提交评论</h4>
@@ -83,6 +88,12 @@
                                 <div id="comment_{{ comment.pk }}">
                                     {{ comment.comment_content|safe }}
                                 </div>
+
+                                <div class="like" onclick="likeChange(this, '{% get_content_type comment %}', {{ comment.pk }})">
+                                    <span class="glyphicon glyphicon-thumbs-up {% get_like_status comment %}"></span>
+                                    <span class="liked-num">{% get_likes_count comment %}</span>
+                                </div>
+
                                 <a href="javascript:reply({{ comment.pk }});">回复</a>
 
                                 {% for reply in comment.root_comment.all %}
@@ -93,6 +104,10 @@
                                         <span>{{ reply.reply_to.username }}: </span>
                                         <div id="comment_{{ reply.pk }}">
                                             <span>{{ reply.comment_content|safe }}</span>
+                                        </div>
+                                        <div class="like" onclick="likeChange(this, '{% get_content_type reply %}', {{ reply.pk }})">
+                                            <span class="glyphicon glyphicon-thumbs-up {% get_like_status reply %}"></span>
+                                            <span class="liked-num">{% get_likes_count reply %}</span>
                                         </div>
                                         <a href="javascript:reply({{ reply.pk }});">回复</a>
                                     </div>
@@ -186,5 +201,39 @@
             });
             return false;
         });
+
+        function likeChange(obj, content_type, object_id) {
+            var is_like = obj.getElementsByClassName('active').length == 0  {# 判断是否有active #}
+            $.ajax({
+                url: '{% url 'like_change' %}',
+                type: 'GET',
+                data:{
+                    content_type: content_type,
+                    object_id: object_id,
+                    is_like: is_like
+                },
+                cache: false,
+                success: function (data) {
+                    console.log(data)
+                    if(data['status'] == 'SUCCESS'){
+                        //更新点赞状态
+                        var element = obj.getElementsByClassName('glyphicon')
+                        if(is_like){
+                            element.addClass('active');
+                        }else {
+                            element.removeClass('active');
+                        }
+                        // 更新点赞数量
+                        var liked_num = $(obj.getElementsByClassName('liked_num'));
+                        liked_num.text(data['liked_num'])
+                    }else{
+                    alert(data['message'])
+                    }
+                },
+                error: function (xhr) {
+                    console.log(xhr)
+                }
+            });
+        }
     </script>
 {% endblock %}
