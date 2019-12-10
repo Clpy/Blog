@@ -1,14 +1,13 @@
-from django.shortcuts import render
 from django.contrib.contenttypes.models import ContentType
 from django.http import JsonResponse
 from django.db.models import ObjectDoesNotExist
 from .models import LikeCount, LikeRecord
 
 
-def success_response(like_num):
+def success_response(liked_num):
     data = {
         'status': 'SUCCESS',
-        'liked_num': like_num
+        'liked_num': liked_num
     }
     return JsonResponse(data)
 
@@ -25,7 +24,6 @@ def error_response(code, message):
 def like_change(request):
     # 获取数据
     user = request.user
-    print(user)
     if not user.is_authenticated:
         return error_response(400, '未登录')
 
@@ -38,10 +36,9 @@ def like_change(request):
         model_obj = model_class.objects.get(pk=object_id)
     except ObjectDoesNotExist:
         return error_response(401, '对象不存在')
-    is_like = request.GET.get('is_like')
 
     # 处理数据
-    if is_like == 'true':
+    if request.GET.get('is_like') == 'true':
         # 要点赞
         like_record, created = LikeRecord.objects.get_or_create(content_type=content_type, object_id=object_id, user=user)
         if created:  # 之前未点赞过

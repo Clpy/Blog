@@ -37,13 +37,7 @@ div.article-content {
     margin-bottom: 2em;
 }
 
-/*设置页码居中*/
-div.paginator {
-    text-align: center;
-}
-
-/*上下篇*/
-div.article-context {
+div.article-more {
     margin-top: 1em;
 }
 
@@ -88,6 +82,6 @@ div.like {
     padding: 0.5em 0.3em;
 }
 
-div.like.active{
+div.like .active{
     color: #f22;
 }
