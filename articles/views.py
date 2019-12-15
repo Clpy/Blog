@@ -5,7 +5,7 @@ from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
 import markdown
 from read_statistics.utils import read_statistics_once_read
-
+from Blog.forms import LoginForm
 
 # Create your views here.
 def article_list(request):
@@ -98,6 +98,7 @@ def article_detail(request, article_pk):
         'article': article,
         'previous_article': previous_article,
         'next_article': next_article,
+        'login_form': LoginForm()
     }
 
     response = render(request, 'article_detail.html', context)  # 响应
