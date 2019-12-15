@@ -23,10 +23,8 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('articles/', include('articles.urls')),
     path('comments/', include('comments.urls')),
+    path('user/', include('user.urls')),
     path('likes/', include('likes.urls')),
-    path('login/', views.login, name='login'),
-    path('login_for_modal/', views.login_for_modal, name='login_for_modal'),
-    path('register/', views.register, name='register'),
     path('mdeditor/', include('mdeditor.urls')),
     path('', views.index, name='index'),
 ]

@@ -5,24 +5,18 @@ from django.db.models import Count
 from django.contrib.contenttypes.models import ContentType
 import markdown
 from read_statistics.utils import read_statistics_once_read
-from Blog.forms import LoginForm
 
-# Create your views here.
+
 def article_list(request):
     '''
     :param request:
     :return:
     '''
     article_all_list = Article.objects.all()
-    paginator = Paginator(article_all_list,6)  # 每10篇 进行分页
+    paginator = Paginator(article_all_list, 3)  # 每10篇 进行分页
     page_num = request.GET.get('page', 1)  # 获取url的页面参数(请求的页码)
     current_page_articles = paginator.get_page(page_num)  # 当前页的文章
     current_page_num = current_page_articles.number # 获取当前页码
-
-    # 获取当前页码前后各两页的范围
-    # page_range = list(range(max(current_page_num - 2, 1), current_page_num)) \
-                 # + list(range(current_page_num, min(current_page_num + 2,
-                                                    # paginator.num_pages) + 1))
     page_range = [x for x in range(current_page_num - 2, current_page_num + 3) if
        (x > 0 and x < paginator.num_pages + 1)]  # paginator.num_pages 获得总页数
 
@@ -37,15 +31,6 @@ def article_list(request):
     if page_range[-1] != paginator.num_pages:
         page_range.append(paginator.num_pages)
 
-    # 获取文章分类的对应文章数量
-    '''
-    categorys = Category.objects.all()  #获取所有分类
-    article_categorys_list = []
-    for category in categorys:
-        category.article_count = Article.objects.filter(
-            category=category).count()
-        article_categorys_list.append(category)
-    '''
     # annotate 拓展查询字段
     categorys = Category.objects.annotate(article_count=Count('article_relate'))
 
@@ -98,7 +83,6 @@ def article_detail(request, article_pk):
         'article': article,
         'previous_article': previous_article,
         'next_article': next_article,
-        'login_form': LoginForm()
     }
 
     response = render(request, 'article_detail.html', context)  # 响应
